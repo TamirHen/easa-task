@@ -1,4 +1,4 @@
-package main.java.model;
+package main.java.reader;
 
 import com.sun.istack.internal.NotNull;
 
@@ -14,16 +14,13 @@ public class FileReader {
 
     public FileReader(@NotNull String pathname) {
         file = new File(pathname);
-        scan();
-    }
-
-    private void scan() {
         try {
             scanner = new Scanner(file);
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.err.println("Could not find file at " + pathname);
         }
     }
+
 
     public List<String> getReversedPairs() {
         StringBuilder sb = new StringBuilder();
@@ -38,8 +35,8 @@ public class FileReader {
             String[] words = currentLine.split(" ");
             for (String word : words) {
                 String reversed = sb.append(word).reverse().toString();
-                if (wordsAndReversed.containsValue(word)) pairs.add(reversed + ", " + word);
-                else wordsAndReversed.put(word, reversed);
+                if (wordsAndReversed.containsKey(word) && !word.equals(reversed)) pairs.add(reversed + ", " + word);
+                else wordsAndReversed.put(reversed, word);
                 // Clear the StringBuilder:
                 sb.setLength(0);
             }
